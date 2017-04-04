@@ -1,8 +1,10 @@
 import traceback
+from datetime import datetime
+from time import time
 import simplejson
 import sys
 from match3.btl_result import BtlOk
-from match3.config import PACKAGE_NAME
+from match3.config import PACKAGE_NAME, ITUNES_NO_CHECK
 from match3.preload import preload
 
 
@@ -16,8 +18,13 @@ def transaction_ios_pay_callback_handler(protocol, entry_point, world, args):
         logger(args)
         logger(world.context)
 
-        result = itunes_check(world)
-        if result:
+        if ITUNES_NO_CHECK:
+            context = simplejson.loads(world.context)
+            result = dict(datetime=datetime.utcfromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'), order="skip_check_{}".format(context.get("order")), item=context.get("item"))
+        else:
+            result = itunes_check(world)
+
+        if result :
             world.pay_transaction(result["item"], {"order_id": result["order"],
                                                "purchaise_time": result["datetime"]})
 
@@ -45,12 +52,14 @@ def itunes_check(world):
         bundle_id = receipt.get("bundle_id")
         transaction_id = in_app.get("transaction_id")
         product_id = in_app.get("product_id")
+        bundle_id_check = bundle_id == PACKAGE_NAME
+        order_check = context.get("order") == transaction_id
+        item_check = context.get("item") == product_id
 
-        if bundle_id == PACKAGE_NAME and \
-                        context.get("order") == transaction_id and \
-                        context.get("item") == product_id:
+        if bundle_id_check and order_check and item_check:
             return dict(datetime=in_app.get("purchase_date"), order=transaction_id, item=product_id)
         else:
             logger("required check failed -> " + "\treceipt fields = " + simplejson.dumps(receipt))
+
     else:
         logger("iTunes status FAILED!!! -> " + str(world.uid) + " status = " + str(status))
