@@ -4,18 +4,20 @@ import simplejson
 
 class World(object):
 
-    def __init__(self, uid, logger, player, *args, **kwargs):
+    def __init__(self, uid, logger, context, player=None, **args):
 
         self.uid = uid
         self.logger = logger
+        self.http = args.get("http")
+        self.context = context
         try:
-            fields = simplejson.loads(player or "{}") or {}
+            player_data = simplejson.loads(player or "{}") or {}
         except:
-            fields = {"player": player}
-        fields = fields if isinstance(fields, dict) else {"player": player}
-        self.player = fields.get("player", {})
-        self.used_transactions = fields.get("used_transactions", {})
-        self.unused_transactions = fields.get("unused_transactions", {})
+            player_data = {"player": player}
+        player_data = player_data if isinstance(player_data, dict) else {"player": player}
+        self.player = player_data.get("player", {})
+        self.used_transactions = player_data.get("used_transactions", {})
+        self.unused_transactions = player_data.get("unused_transactions", {})
         self.changed = False
 
     def set_data(self, data):

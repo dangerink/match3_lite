@@ -5,6 +5,8 @@ from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from base64 import b64decode
+
+from match3.btl_result import BtlOk
 from match3.config import GOOGLE_PUBLIC_KEY, PACKAGE_NAME
 from match3.preload import preload
 
@@ -31,7 +33,7 @@ def transaction_pay_handler(protocol, entry_point, world, args):
 
         if package_name != PACKAGE_NAME:
             log("wrong_package")
-            return '{"result": "!!wrong_package"}'
+            return BtlOk('{"result": "!!wrong_package"}')
 
 
         if order_id is None:
@@ -40,30 +42,30 @@ def transaction_pay_handler(protocol, entry_point, world, args):
 
         if order_id in world.get_transactions_order_ids(product_id):
             log("!!already_exists")
-            return '{"result": "already_exists"}'
+            return BtlOk('{"result": "already_exists"}')
 
         if developer_payload != world.uid:
             log("!!bad_order")
-            return '{"result": "bad_order"}'
+            return BtlOk('{"result": "bad_order"}')
 
         valid = validate_purchase(GOOGLE_PUBLIC_KEY,
                                   signedData=purchase_data_string,
                                   signature=google_data["signature"])
         if not valid:
             log("bad_signature")
-            return '{"result": "bad_signature"}'
+            return BtlOk('{"result": "bad_signature"}')
 
         world.pay_transaction(product_id, {"order_id": order_id,
                                "purchaise_time": purchase_data.get("purchaseTime")})
 
         log("transaction_pay completed")
 
-        return '{"result": "ok"}'
+        return BtlOk('{"result": "ok"}')
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
         log(''.join('!!' + line for line in lines))
-        return '{"result": "error"}'
+        return BtlOk('{"result": "error"}')
 
 
 def chunks(s, n):

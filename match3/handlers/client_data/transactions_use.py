@@ -1,3 +1,4 @@
+from match3.btl_result import BtlOk
 from match3.preload import preload
 
 
@@ -8,4 +9,4 @@ def transactions_use_handler(protocol, entry_point, world, args):
     log(str(args))
     world.use_transactions()
     log("transaction_use completed")
-    return '{"result": "ok"}'
+    return BtlOk('{"result": "ok"}')

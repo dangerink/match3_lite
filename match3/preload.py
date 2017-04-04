@@ -6,6 +6,9 @@ import traceback, logging
 from time import strftime, gmtime, time
 
 from erlport import Atom
+
+from match3 import btl_result
+from match3.btl_result import BtlResult
 from match3.model.world import World
 from time import gmtime, strftime
 
@@ -29,12 +32,10 @@ def pythonLogger(folder_name, file_name=None):
     return logger
 
 
-
 def preload():
     def wrap(handler):
         def _inner(protocol, entry_point, context=None, uid=None, values=None, get_args=None, *args):
             try:
-
                 def logger(text):
                     logger = pythonLogger(uid)
                     log_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
@@ -45,10 +46,11 @@ def preload():
 
                 values = dict(values)
 
-                world = World(uid, logger, **values)
+                world = World(uid, logger, context, **values)
                 result = handler(protocol, entry_point, world, get_args)
-                return Atom("ok"), result or "", world.raw
 
+                btl_result = BtlResult(world.raw)
+                return btl_result.get_result(result)
             except :
                 try:
                     logger(traceback.format_exc())
@@ -57,3 +59,5 @@ def preload():
                 return Atom("error"), json.dumps({"result": "fail"})
         return _inner
     return wrap
+
+
