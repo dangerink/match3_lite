@@ -4,7 +4,7 @@ from time import time
 import simplejson
 import sys
 from match3.btl_result import BtlOk
-from match3.config import PACKAGE_NAME, ITUNES_NO_CHECK
+from match3.config import ITUNES_NO_CHECK, IOS_BUNDLE_ID
 from match3.preload import preload
 
 
@@ -52,7 +52,7 @@ def itunes_check(world):
         bundle_id = receipt.get("bundle_id")
         transaction_id = in_app.get("transaction_id")
         product_id = in_app.get("product_id")
-        bundle_id_check = bundle_id == PACKAGE_NAME
+        bundle_id_check = bundle_id == IOS_BUNDLE_ID
         order_check = context.get("order") == transaction_id
         item_check = context.get("item") == product_id
 
