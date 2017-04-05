@@ -26,7 +26,7 @@ def transaction_ios_pay_handler(protocol, entry_point, world, args):
 
         body = simplejson.dumps({"receipt-data": payload})
         request = (ITUNES_URL, [(Atom("method"), Atom("post")), (Atom("body"), body)])
-        fields.append(("http", request))
+        fields.append((Atom("http"), request))
 
         return  BtlRequest("transaction_ios_pay_callback", fields, simplejson.dumps(args))
 

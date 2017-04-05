@@ -41,3 +41,4 @@ print admin_transaction_add_handler(protocol, "admin", context, uid, values, get
 print admin_set_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_callback_handler(protocol, "admin", context, uid, values, get_args),"\n"
+
