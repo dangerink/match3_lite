@@ -22,7 +22,7 @@ def transaction_ios_pay_handler(protocol, entry_point, world, args):
         if order_id in world.get_transactions_order_ids(product_id):
             log("!!already_exists")
             return BtlOk('{"result": "already_exists"}')
-        fields = ["player"]
+        fields = [Atom("player")]
 
         body = simplejson.dumps({"receipt-data": payload})
         request = (ITUNES_URL, [(Atom("method"), Atom("post")), (Atom("body"), body)])
