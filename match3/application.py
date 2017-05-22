@@ -9,6 +9,7 @@ from match3.handlers.client_data.transaction_pay import transaction_pay_handler
 from match3.handlers.client_data.transactions_unused_get import transactions_unused_get_handler
 from match3.handlers.client_data.transactions_use import transactions_use_handler
 from match3.handlers.client_data.transactions_used_get import transactions_used_get_handler
+from match3.preload import pythonLogger
 
 
 class Match3Protocol(Protocol):
@@ -25,4 +26,7 @@ class Match3Protocol(Protocol):
 
 
     def __init__(self, *args, **kwargs):
+        logger = pythonLogger("info")
+        logger.info("worker starting.")
         super(Match3Protocol, self).__init__(*args, **kwargs)
+        logger.info("worker started.")

@@ -32,32 +32,44 @@ def pythonLogger(folder_name, file_name=None):
     return logger
 
 
+def logger(uid):
+    def write(text):
+        logger = pythonLogger(uid)
+        log_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        logger.info("INFO {}: {}".format(
+            log_time, text))
+        logger.handlers[0].stream.close()
+        logger.removeHandler(logger.handlers[0])
+    return write
+
+
 def preload():
-    def wrap(handler):
-        def _inner(protocol, entry_point, context=None, uid=None, values=None, get_args=None, *args):
-            try:
-                def logger(text):
-                    logger = pythonLogger(uid)
-                    log_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-                    logger.info("INFO {}: {}".format(
-                        log_time, text))
-                    logger.handlers[0].stream.close()
-                    logger.removeHandler(logger.handlers[0])
-
-                values = dict(values)
-
-                world = World(uid, logger, context, **values)
-                result = handler(protocol, entry_point, world, get_args)
-
-                btl_result = BtlResult(world.raw)
-                return btl_result.get_result(result)
-            except :
+    try:
+        def wrap(handler):
+            def _inner(protocol, entry_point, context=None, uid=None, values=None, get_args=None, *args):
                 try:
-                    logger(traceback.format_exc())
-                except:
-                    pass
-                return Atom("error"), json.dumps({"result": "fail"})
-        return _inner
-    return wrap
+                    l = logger(uid)
+                    values = dict(values)
+
+                    world = World(uid, l, context, **values)
+                    result = handler(protocol, entry_point, world, get_args)
+
+                    btl_result = BtlResult(world.raw)
+                    return btl_result.get_result(result)
+                except :
+                    try:
+                        l(traceback.format_exc())
+                    except:
+                        pass
+                    return Atom("error"), json.dumps({"result": "fail"})
+            return _inner
+        return wrap
+    except :
+        try:
+            l = logger("info")
+            l(traceback.format_exc())
+        except:
+            pass
+        return Atom("error"), json.dumps({"result": "critical"})
 
 
