@@ -20,7 +20,9 @@ def transaction_ios_pay_callback_handler(protocol, entry_point, world, args):
 
         if ITUNES_NO_CHECK:
             context = simplejson.loads(world.context)
-            result = dict(datetime=datetime.utcfromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'), order="skip_check_{}".format(context.get("order")), item=context.get("item"))
+            result = dict(datetime=datetime.utcfromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
+                          order="skip_check_{}".format(context.get("order")),
+                          item=context.get("item"))
         else:
             result = itunes_check(world)
 

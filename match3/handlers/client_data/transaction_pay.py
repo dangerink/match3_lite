@@ -1,6 +1,8 @@
 import traceback
 import simplejson
 import sys
+
+import time
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
@@ -56,7 +58,7 @@ def transaction_pay_handler(protocol, entry_point, world, args):
             return BtlOk('{"result": "bad_signature"}')
 
         world.pay_transaction(product_id, {"order_id": order_id,
-                               "purchaise_time": purchase_data.get("purchaseTime")})
+                               "purchaise_time": str(int(time.time()))})
 
         log("transaction_pay completed")
 

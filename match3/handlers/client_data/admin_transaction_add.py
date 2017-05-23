@@ -2,6 +2,8 @@ import traceback
 
 import sys
 
+import time
+
 from match3.btl_result import BtlOk
 from match3.preload import preload
 
@@ -17,7 +19,7 @@ def admin_transaction_add_handler(protocol, entry_point, world, args):
         return BtlOk('{"result": "error_auth"}')
     try:
         world.pay_transaction(args["product_id"], {"order_id": args["order_id"],
-                               "purchase_time": args["purchase_time"]})
+                               "purchase_time": str(int(time.time()))})
 
         log("admin_transaction_add completed")
         return BtlOk('{"result": "ok"}')
