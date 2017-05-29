@@ -12,22 +12,18 @@ from match3.btl_result import BtlResult
 from match3.model.world import World
 from time import gmtime, strftime
 
-def pythonLogger(folder_name, file_name=None):
-    logger = logging.getLogger(folder_name)
+def pythonLogger(name, file_name=None):
+    logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     today = strftime("%d_%b_%Y", gmtime())
-    path = '{}/log'.format(os.getcwd())
+    path = '{}/log/{}'.format(os.getcwd(), today)
     if not os.path.exists(path):
         os.mkdir(path)
-    dir = '{}/{}'.format(path, folder_name)
-    if not os.path.exists(dir):
-        os.mkdir(dir)
-    for file in os.listdir(dir):
-        full_name = '{}/{}'.format(dir, file)
-        if os.path.getctime(full_name) + 432000 < time():
-            os.remove(full_name)
-    file_name = file_name or today
-    handler = logging.FileHandler('{}/{}.log'.format(dir, file_name), 'a')
+
+    if file_name:
+        name = "{}_{}".format(file_name)
+
+    handler = logging.FileHandler('{}/{}.log'.format(path, name), 'a')
     logger.addHandler(handler)
     return logger
 

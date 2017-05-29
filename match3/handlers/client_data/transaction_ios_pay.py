@@ -11,7 +11,7 @@ from match3.preload import preload
 def transaction_ios_pay_handler(protocol, entry_point, world, args):
     log = world.logger
     log("\n\ntransaction_ios_pay")
-    log(args)
+    log("args={}".format(args))
 
     try:
         args = dict(args)

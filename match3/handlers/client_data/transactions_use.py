@@ -5,8 +5,5 @@ from match3.preload import preload
 @preload()
 def transactions_use_handler(protocol, entry_point, world, args):
     log = world.logger
-    log("transaction_use")
-    log(str(args))
-    world.use_transactions()
-    log("transaction_use completed")
+    world.use_transactions(log)
     return BtlOk('{"result": "ok"}')

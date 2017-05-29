@@ -42,9 +42,10 @@ class World(object):
         unused.append(transaction)
         self.changed = True
 
-    def use_transactions(self):
+    def use_transactions(self, log):
         if self.unused_transactions:
             for item in self.unused_transactions:
+                log("using {}".format(item))
                 used = self.used_transactions.setdefault(item, [])
                 used += self.unused_transactions[item]
 

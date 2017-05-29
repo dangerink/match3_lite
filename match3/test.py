@@ -1,4 +1,5 @@
 import simplejson
+import time
 from erlport import Atom
 
 from match3.handlers.client_data.admin_set import admin_set_handler
@@ -42,3 +43,6 @@ print admin_set_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_callback_handler(protocol, "admin", context, uid, values, get_args),"\n"
 
+
+
+print str(int(time.time()))

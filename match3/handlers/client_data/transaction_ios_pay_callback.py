@@ -13,6 +13,7 @@ def transaction_ios_pay_callback_handler(protocol, entry_point, world, args):
     logger = world.logger
     logger("\n\ntransaction_ios_pay_callback")
 
+
     try:
 
         logger(args)
