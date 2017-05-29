@@ -3,11 +3,9 @@
 import json
 import os
 import traceback, logging
-from time import strftime, gmtime, time
 
 from erlport import Atom
 
-from match3 import btl_result
 from match3.btl_result import BtlResult
 from match3.model.world import World
 from time import gmtime, strftime
@@ -16,14 +14,17 @@ def pythonLogger(name, file_name=None):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
     today = strftime("%d_%b_%Y", gmtime())
-    path = '{}/log/{}'.format(os.getcwd(), today)
-    if not os.path.exists(path):
-        os.mkdir(path)
+    log_path = '{}/log'.format(os.getcwd())
+    cur_path = '{}/{}'.format(log_path, today)
+
+    for part in (log_path, cur_path):
+        if not os.path.exists(part):
+            os.mkdir(part)
 
     if file_name:
         name = "{}_{}".format(file_name)
 
-    handler = logging.FileHandler('{}/{}.log'.format(path, name), 'a')
+    handler = logging.FileHandler('{}/{}.log'.format(cur_path, name), 'a')
     logger.addHandler(handler)
     return logger
 

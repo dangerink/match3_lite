@@ -2,6 +2,7 @@ import simplejson
 import time
 from erlport import Atom
 
+from match3.application import Match3Protocol
 from match3.handlers.client_data.admin_set import admin_set_handler
 from match3.handlers.client_data.admin_transaction_add import admin_transaction_add_handler
 from match3.handlers.client_data.get_user import get_user_handler
@@ -31,7 +32,7 @@ get_args = {"item":"r_starter_pack_1",
             "product_id": "p", "order_id": "o","purchase_time": "t",
             "data":'{"used_transactions": "ololo"}'}
 
-
+Match3Protocol()
 
 print get_user_handler(protocol, entry_point, context, uid, values, get_args), "\n"
 print set_user_handler(protocol, entry_point, context, uid, values, get_args), "\n"
@@ -42,6 +43,8 @@ print admin_transaction_add_handler(protocol, "admin", context, uid, values, get
 print admin_set_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_handler(protocol, "admin", context, uid, values, get_args),"\n"
 print transaction_ios_pay_callback_handler(protocol, "admin", context, uid, values, get_args),"\n"
+
+
 
 
 
