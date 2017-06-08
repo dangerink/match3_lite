@@ -45,7 +45,4 @@ print transaction_ios_pay_handler(protocol, "admin", context, uid, values, get_a
 print transaction_ios_pay_callback_handler(protocol, "admin", context, uid, values, get_args),"\n"
 
 
-
-
-
 print str(int(time.time()))

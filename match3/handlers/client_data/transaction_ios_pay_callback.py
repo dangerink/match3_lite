@@ -12,24 +12,22 @@ from match3.preload import preload
 def transaction_ios_pay_callback_handler(protocol, entry_point, world, args):
     logger = world.logger
     logger("\n\ntransaction_ios_pay_callback")
-
+    now = str(int(time()))
 
     try:
-
         logger(args)
         logger(world.context)
 
         if ITUNES_NO_CHECK:
             context = simplejson.loads(world.context)
-            result = dict(datetime=datetime.utcfromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
-                          order="skip_check_{}".format(context.get("order")),
+            result = dict(order="skip_check_{}".format(context.get("order")),
                           item=context.get("item"))
         else:
             result = itunes_check(world)
 
-        if result :
+        if result:
             world.pay_transaction(result["item"], {"order_id": result["order"],
-                                               "purchaise_time": result["datetime"]})
+                                                   "purchaise_time": now})
 
             logger("transaction_ios_pay completed")
 
@@ -60,7 +58,7 @@ def itunes_check(world):
         item_check = context.get("item") == product_id
 
         if bundle_id_check and order_check and item_check:
-            return dict(datetime=in_app.get("purchase_date"), order=transaction_id, item=product_id)
+            return dict(order=transaction_id, item=product_id)
         else:
             logger("required check failed -> " + "\treceipt fields = " + simplejson.dumps(receipt))
 
