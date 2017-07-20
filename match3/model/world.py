@@ -52,6 +52,13 @@ class World(object):
             self.unused_transactions = {}
             self.changed = True
 
+    def get_last_transaction(self):
+        if self.used_transactions:
+            all_transactions = reduce(lambda x, y: x + y, self.used_transactions.values())
+            times = [item.get("purchaise_time") for item in all_transactions]
+            return max(times)
+        return 0
+
     def get_transactions_order_ids(self, product_id):
         return [item.get("order_id") for item in self.used_transactions.get(product_id, {})] + \
                [item.get("order_id") for item in self.unused_transactions.get(product_id, {})]
