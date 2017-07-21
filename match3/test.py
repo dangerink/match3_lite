@@ -42,6 +42,7 @@ print set_user_handler(protocol, entry_point, context, uid, values, get_args), "
 print transaction_pay_handler(protocol, entry_point, context, uid, values, get_args), "\n"
 print transactions_use_handler(protocol, entry_point, context, uid, values, get_args), "\n"
 
+print transactions_unused_get_handler(protocol, entry_point, context, uid, values, get_args), "\n"
 
 print admin_transaction_add_handler(protocol, "admin", context, uid, values, get_args), "\n"
 print admin_set_handler(protocol, "admin", context, uid, values, get_args),"\n"

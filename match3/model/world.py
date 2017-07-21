@@ -1,3 +1,4 @@
+import time
 from erlport import Atom
 import simplejson
 
@@ -18,6 +19,7 @@ class World(object):
         self.player = player_data.get("player", {})
         self.used_transactions = player_data.get("used_transactions", {})
         self.unused_transactions = player_data.get("unused_transactions", {})
+        self.last_transaction_time = player_data.get("last_transaction_time", "0")
         self.changed = False
 
     def set_data(self, data):
@@ -40,6 +42,7 @@ class World(object):
     def pay_transaction(self, prodict_id, transaction):
         unused = self.unused_transactions.setdefault(prodict_id, [])
         unused.append(transaction)
+        self.last_transaction_time = str(int(time.time()))
         self.changed = True
 
     def use_transactions(self, log):
@@ -48,16 +51,14 @@ class World(object):
                 log("using {}".format(item))
                 used = self.used_transactions.setdefault(item, [])
                 used += self.unused_transactions[item]
-
             self.unused_transactions = {}
             self.changed = True
 
     def get_last_transaction(self):
-        if self.used_transactions:
-            all_transactions = reduce(lambda x, y: x + y, self.used_transactions.values())
-            times = [item.get("purchaise_time") for item in all_transactions]
-            return max(times)
-        return "0"
+        return self.last_transaction_time or "0"
+
+    def set_last_transaction(self, t):
+        self.last_transaction_time = t
 
     def get_transactions_order_ids(self, product_id):
         return [item.get("order_id") for item in self.used_transactions.get(product_id, {})] + \
@@ -69,7 +70,8 @@ class World(object):
         if self.changed and self.player is not None:
             data = {"player": self.player,
                            "used_transactions": self.used_transactions,
-                           "unused_transactions": self.unused_transactions}
+                           "unused_transactions": self.unused_transactions,
+                           "last_transaction_time": self.last_transaction_time}
 
             d = simplejson.dumps(data)
             result.update({Atom("player"): d})
